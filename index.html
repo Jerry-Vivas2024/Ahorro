@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ahorro y Préstamos</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Operación financiera</p>
+          <h1>Ahorro y Préstamos</h1>
+        </div>
+        <div id="user-box" class="user-box hidden">
+          <span id="user-name">Usuario</span>
+          <button id="logout-btn" class="secondary-btn" type="button">Cerrar sesión</button>
+        </div>
+      </header>
+
+      <main class="auth-layout">
+        <section id="auth-panel" class="auth-panel">
+          <div class="auth-header">
+            <h2 id="auth-title">Iniciar sesión</h2>
+            <div class="auth-tabs" role="tablist" aria-label="Autenticación">
+              <button class="tab-btn active" type="button" data-mode="login">Login</button>
+              <button class="tab-btn" type="button" data-mode="register">Register</button>
+              <button class="tab-btn" type="button" data-mode="reset">Forgot password</button>
+            </div>
+          </div>
+
+          <form id="login-form" class="auth-form visible">
+            <label for="login-email">Correo</label>
+            <input id="login-email" name="email" type="email" placeholder="tu@correo.com" required />
+
+            <label for="login-password">Contraseña</label>
+            <input id="login-password" name="password" type="password" placeholder="••••••••" required />
+
+            <button type="submit">Entrar</button>
+          </form>
+
+          <form id="register-form" class="auth-form hidden">
+            <label for="register-name">Nombre</label>
+            <input id="register-name" name="name" type="text" placeholder="Tu nombre" required />
+
+            <label for="register-email">Correo</label>
+            <input id="register-email" name="email" type="email" placeholder="tu@correo.com" required />
+
+            <label for="register-password">Contraseña</label>
+            <input id="register-password" name="password" type="password" placeholder="Mínimo 6 caracteres" required />
+
+            <button type="submit">Crear cuenta</button>
+          </form>
+
+          <form id="reset-form" class="auth-form hidden">
+            <label for="reset-email">Correo</label>
+            <input id="reset-email" name="email" type="email" placeholder="tu@correo.com" required />
+
+            <button type="submit">Enviar código</button>
+          </form>
+
+          <form id="reset-confirm-form" class="auth-form hidden">
+            <label for="reset-code">Código recibido</label>
+            <input id="reset-code" name="code" type="text" placeholder="123456" required />
+
+            <label for="reset-new-password">Nueva contraseña</label>
+            <input id="reset-new-password" name="newPassword" type="password" placeholder="Nueva contraseña" required />
+
+            <button type="submit">Actualizar contraseña</button>
+          </form>
+
+          <div class="oauth-section">
+            <p>O continuar con</p>
+            <div class="oauth-grid">
+              <button class="oauth-btn github-btn" type="button" data-provider="github">GitHub</button>
+              <button class="oauth-btn google-btn" type="button" data-provider="google">Google</button>
+            </div>
+          </div>
+
+          <div id="auth-message" class="message-box" aria-live="polite"></div>
+        </section>
+
+        <section id="dashboard" class="dashboard hidden">
+          <section class="panel highlight">
+            <div class="panel-header">
+              <h2>Capital Global</h2>
+              <span class="pill">Disponible</span>
+            </div>
+            <p class="big-number" id="capital-total">$0.00</p>
+            <form id="capital-form" class="stacked-form">
+              <label for="capital-amount">Agregar capital</label>
+              <div class="input-row">
+                <input id="capital-amount" type="number" min="0" step="0.01" placeholder="Monto a ingresar" />
+                <button type="submit">Agregar</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Nuevo préstamo personal</h2>
+              <span class="pill warning">36% anual</span>
+            </div>
+
+            <form id="loan-form" class="stacked-form">
+              <label for="loan-amount">Monto del préstamo</label>
+              <input id="loan-amount" type="number" min="1" step="0.01" placeholder="Ej. 2500" />
+
+              <label for="loan-months">Plazo en meses</label>
+              <select id="loan-months">
+                <option value="6">6 meses</option>
+                <option value="12">12 meses</option>
+                <option value="18">18 meses</option>
+                <option value="24">24 meses</option>
+                <option value="36">36 meses</option>
+                <option value="48">48 meses</option>
+                <option value="60">60 meses</option>
+              </select>
+
+              <button type="submit">Crear préstamo</button>
+            </form>
+            <p id="loan-error" class="error-message" aria-live="polite"></p>
+          </section>
+
+          <section class="panel full-span">
+            <div class="panel-header">
+              <h2>Préstamos activos</h2>
+              <span class="pill soft">Cuota fija</span>
+            </div>
+            <div id="loans-list" class="loans-list"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <template id="loan-card-template">
+      <article class="loan-card">
+        <div class="loan-header">
+          <div>
+            <p class="loan-id"></p>
+            <h3 class="loan-name"></h3>
+          </div>
+          <span class="loan-status"></span>
+        </div>
+
+        <div class="loan-metrics">
+          <div>
+            <label>Monto inicial</label>
+            <strong class="amount-value"></strong>
+          </div>
+          <div>
+            <label>Saldo actual</label>
+            <strong class="balance-value"></strong>
+          </div>
+          <div>
+            <label>Cuota fija</label>
+            <strong class="fee-value"></strong>
+          </div>
+          <div>
+            <label>Plazo</label>
+            <strong class="months-value"></strong>
+          </div>
+        </div>
+
+        <div class="extra-payment-box">
+          <label>Abono mayor a la cuota</label>
+          <div class="input-row compact">
+            <input class="extra-payment-input" type="number" min="0" step="0.01" placeholder="Monto extra" />
+            <button class="extra-payment-btn" type="button">Aplicar</button>
+          </div>
+        </div>
+
+        <div class="schedule-wrap">
+          <h4>Tabla de pagos</h4>
+          <div class="schedule-table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mes</th>
+                  <th>Saldo inicial</th>
+                  <th>Interés</th>
+                  <th>Amortización</th>
+                  <th>Cuota</th>
+                  <th>Saldo final</th>
+                </tr>
+              </thead>
+              <tbody class="schedule-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

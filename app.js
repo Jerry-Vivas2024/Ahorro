@@ -40,9 +40,7 @@ const resetConfirmForm = document.querySelector('#reset-confirm-form');
 const tabs = [...document.querySelectorAll('.tab-btn')];
 
 function formatCurrency(value) {
-  return new Intl.NumberFormat('es-ES', {
-    style: 'currency',
-    currency: 'USD',
+  return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(Number(value || 0));
